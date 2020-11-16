@@ -6,7 +6,7 @@ RUN mkdir /build
 
 COPY setup.py .
 COPY scheduler/ scheduler/
-RUN pip install --prefix=/work/build .
+RUN pip install --no-warn-script-location --prefix=/work/build .
 
 FROM base
 

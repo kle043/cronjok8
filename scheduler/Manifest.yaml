@@ -1,17 +1,57 @@
-apiVersion: batch/v1
-kind: Job
+---
+apiVersion: v1
+kind: ServiceAccount
 metadata:
-  name: worker
+  name: sa-scheduler
+  namespace: default
+
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: scheduler-role
+rules:
+- apiGroups:
+    - batch
+  resources:
+    - jobs
+  verbs:
+    - get
+    - list
+    - create
+
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: scheduler-role-binding
+subjects:
+- kind: ServiceAccount
+  name: sa-scheduler
+  namespace: default
+roleRef:
+  kind: Role
+  name: scheduler-role
+  apiGroup: ""
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: scheduler
 spec:
-  template:
+  schedule: "*/1 * * * *"
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  jobTemplate:
     spec:
-      containers:
-      - name: worker
-        image: worker:latest
-        imagePullPolicy: IfNotPresent
-        command: ["worker",  "2"]
-        env:
-        - name: JOB_SERVER
-          value: "http://service-server:80"
-      restartPolicy: Never
-  backoffLimit: 4
+      template:
+        spec:
+          serviceAccountName: sa-scheduler
+          containers:
+          - name: scheduler
+            image: scheduler:latest
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: JOB_SERVER
+                value: "http://service-server:80"
+          restartPolicy: Never

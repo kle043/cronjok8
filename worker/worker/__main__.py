@@ -15,7 +15,7 @@ def main(args=None):
     res = requests.post(f'{JOB_SERVER_BASE_URL}/worktime', json = {'id': int(args.job_id)})
     worker = res.json()
     print(f'Worker {worker["name"]} starts working!')
-    time.sleep(worker['worktime'])
+    time.sleep(worker['worktime']*60)
     print('Finished!')
 
 if __name__ == "__main__":
