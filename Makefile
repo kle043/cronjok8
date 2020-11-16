@@ -11,5 +11,5 @@ build-worker: ## Build the worker
 build-server: ## Build the server
 	docker build -t server:latest server/
 
-build-server: ## Build the scheduler
+build-scheduler: ## Build the scheduler
 	docker build -t scheduler:latest scheduler/

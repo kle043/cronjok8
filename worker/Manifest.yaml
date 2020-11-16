@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: worker
+spec:
+  template:
+    spec:
+      containers:
+      - name: worker
+        image: worker:latest
+        imagePullPolicy: IfNotPresent
+        command: ["worker",  "2"]
+        env:
+        - name: JOB_SERVER
+          value: "http://service-server:80"
+      restartPolicy: Never
+  backoffLimit: 4
