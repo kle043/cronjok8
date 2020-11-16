@@ -2,14 +2,8 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: worker
-  labels:
-    jobgroup: worker-group
 spec:
   template:
-    metadata:
-     name: worker-group
-     labels:
-       jobgroup: worker-group
     spec:
       containers:
       - name: worker
