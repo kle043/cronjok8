@@ -16,7 +16,7 @@ rules:
   resources:
     - jobs
   verbs:
-    - get
+    - delete
     - list
     - create
 
