@@ -44,6 +44,9 @@ spec:
   selector:
     app: prometheus
   ports:
+  - name: promgate
+    port: 9091
+    targetPort: 9091
   - name: promui
     nodePort: 30900
     protocol: TCP
@@ -66,6 +69,10 @@ spec:
         app: prometheus
     spec:
       containers:
+      - name: prometheus-gateway
+        image: prom/pushgateway
+        ports:
+        - containerPort: 9091
       - name: prometheus-cont
         image: prom/prometheus
         imagePullPolicy: IfNotPresent
