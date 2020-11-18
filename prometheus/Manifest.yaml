@@ -39,6 +39,9 @@ subjects:
 kind: Service
 apiVersion: v1
 metadata:
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: "9091"
   name: prometheus-service
 spec:
   selector:
