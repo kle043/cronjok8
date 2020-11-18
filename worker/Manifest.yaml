@@ -16,8 +16,16 @@ spec:
         image: worker:latest
         imagePullPolicy: IfNotPresent
         command: ["worker",  "2"]
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
         env:
         - name: JOB_SERVER
           value: "http://service-server:80"
       restartPolicy: Never
+
   backoffLimit: 4

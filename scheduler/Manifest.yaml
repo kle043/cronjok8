@@ -51,6 +51,13 @@ spec:
           - name: scheduler
             image: scheduler:latest
             imagePullPolicy: IfNotPresent
+            resources:
+              requests:
+                memory: "64Mi"
+                cpu: "250m"
+              limits:
+                memory: "128Mi"
+                cpu: "500m"
             env:
               - name: JOB_SERVER
                 value: "http://service-server:80"
