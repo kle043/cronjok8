@@ -3,6 +3,8 @@ import requests
 from kubernetes import client, config
 import time
 import yaml
+from datetime import datetime
+from dateutil.tz import tzutc
 
 JOB_SERVER_BASE_URL = os.environ["JOB_SERVER"]
 NAMESPACE = "default"
@@ -55,20 +57,28 @@ def main(args=None):
         NAMESPACE, label_selector="jobgroup=worker-group"
     )
 
-    # Clean finished jobs, so that they can be restarted
     finished_job_names = [
-        j.metadata.name for j in current_jobs.items if j.status.active is None
+        (j.metadata.name, j.status.completion_time) for j in current_jobs.items if j.status.active is None
     ]
-
-    for job_name in finished_job_names:
-        print(f"Deleting {job_name}")
-        delete_job(batch_client, job_name)
-
-    time.sleep(5)
-
     running_job_names = [
         j.metadata.name for j in current_jobs.items if j.status.active is not None
     ]
+
+    current_time = datetime.now(tz=tzutc())
+
+    # Clean finished jobs older then 3 min, so that they can be restarted
+
+    for job_name, completion_time in finished_job_names:
+        if (current_time-completion_time).seconds > 3*60:
+            print(f"Deleting {job_name}")
+            delete_job(batch_client, job_name)
+        else:
+            print(f'Keeping finished job {job_name}')
+            running_job_names.append(job_name)
+
+    time.sleep(5)
+
+
 
     new_jobs = requests.get(f"{JOB_SERVER_BASE_URL}/characters").json()
 
