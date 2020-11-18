@@ -68,6 +68,7 @@ spec:
       containers:
       - name: prometheus-cont
         image: prom/prometheus
+        imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: config-volume
           mountPath: /etc/prometheus/prometheus.yml

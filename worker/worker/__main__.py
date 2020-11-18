@@ -3,7 +3,10 @@ import os
 import requests
 import time
 
+from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
+
 JOB_SERVER_BASE_URL = os.environ['JOB_SERVER']
+PROMETHEUS_SERVER = os.environ['PROMETHEUS_SERVER']
 
 def main(args=None):
 
@@ -18,6 +21,11 @@ def main(args=None):
     print(f'Worker {worker["name"]} starts working!')
     for _ in range(0, worker['worktime']):
         print(f'{worker["name"]} working!')
+
+    registry = CollectorRegistry()
+    g = Gauge('job_last_success_unixtime', 'Last time a batch job successfully finished', registry=registry)
+    g.set_to_current_time()
+    push_to_gateway(PROMETHEUS_SERVER, job=worker["name"], registry=registry)
     print('Finished!')
 
 if __name__ == "__main__":

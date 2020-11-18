@@ -8,7 +8,7 @@ setup(
     description='A worker',
     packages=find_packages(exclude=('tests',)),
     include_package_data=True,
-    install_requires=['requests==2.21.0'],
+    install_requires=['requests==2.21.0', 'prometheus_client==0.8.0'],
     entry_points={
         "console_scripts": [
             f"{NAME} = {NAME}.__main__:main"
