@@ -19,7 +19,7 @@ build: build-worker build-server build-scheduler ## Build the images
 apply: ## Deploy the manifests
 	kubectl apply -f server/Manifest.yaml
 	kubectl apply -f scheduler/Manifest.yaml
-	kubectl apply -f prometheus/ConfMap.yaml
+	kubectl apply -f prometheus/ConfigMap.yaml
 	kubectl apply -f prometheus/Manifest.yaml
 
 all: build apply
@@ -32,4 +32,5 @@ delete:
 clean:
 	-kubectl delete -f server/Manifest.yaml
 	-kubectl delete -f scheduler/Manifest.yaml
+	-kubectl delete -f prometheus/Manifest.yaml
 	-kubectl delete jobs.batch -l jobgroup=worker-group
