@@ -21,6 +21,7 @@ def main(args=None):
     print(f'Worker {worker["name"]} starts working!')
     for _ in range(0, worker['worktime']):
         print(f'{worker["name"]} working!')
+        time.sleep(worker['worktime']*0.1)
 
     registry = CollectorRegistry()
     g = Gauge('job_last_success_unixtime', 'Last time a batch job successfully finished', registry=registry)
